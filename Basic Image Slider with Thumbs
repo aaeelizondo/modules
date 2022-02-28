@@ -1,0 +1,173 @@
+/*///////////////////////////////////////////////
+//
+IMAGE SLIDER
+//
+///////////////////////////////////////////////*/
+function image_slider_function($atts, $content=null){
+	$a = shortcode_atts( array(
+	'images' =>'',
+	'thumbs'=> '',
+	), $atts);
+	$thumbs = $a['thumbs'];
+	$images = $a['images'];
+	$image_ids = explode(', ', $images);
+
+	$number_of_images = sizeof($image_ids);
+	$sliderHTML = '<div class="image-slider-wrapper">';
+
+	$sliderHTML .= '<div class="image-slider">';
+	for($i = 0; $i < $number_of_images; $i++){
+		$image_url = wp_get_attachment_image_url($image_ids[$i], 'full');
+		$image_alt = get_post_meta($image_ids[$i], '_wp_attachment_image_alt', TRUE);
+		$sliderHTML .= '<div class="image-container"><img src="'. $image_url .'" alt="'. $image_alt .'"></div>';
+	}
+	$sliderHTML .= '</div>';
+	
+	if($thumbs == "true"){
+		$sliderHTML .= '<div class="slider-thumbs content center medium not-inner">';
+		for($i = 0; $i < $number_of_images; $i++){
+			$image_url = wp_get_attachment_image_url($image_ids[$i], 'full');
+			$image_alt = get_post_meta($image_ids[$i], '_wp_attachment_image_alt', TRUE);
+			$sliderHTML .= '<div class="image-container"><img src="'. $image_url .'" alt="'. $image_alt .'"></div>';
+		}
+		$sliderHTML .= '</div>';
+	}
+	$sliderHTML .= '</div>';
+
+
+	return $sliderHTML;
+}
+add_shortcode('image_slider', 'image_slider_function');
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CSS
+/////////////////////
+
+.image-slider{
+		.image-container{
+			@include interpolate(min-height, $min-width, $max-width, 240px, 850px);
+		}
+		.slick-arrow{
+			top: 0;
+			bottom: 0;
+			z-index: 1;
+			&.prev{
+				left: 60px;
+				@include if-screen($medium){
+					left: 10px;
+				}
+			}
+			&.next{
+				right: 60px;
+				@include if-screen($medium){
+					right: 10px;
+				}
+			}
+		}
+	}
+	.slider-thumbs{
+		position: absolute;
+		bottom: 50px;
+		left: 0;
+		right: 0;
+		margin: auto;
+		.image-container{
+			@include transition-duration(0.6s);
+			height: 85px;
+			width: 155px;
+			cursor: pointer;
+			opacity: 0.5;
+			img{
+				width: 90% !important;
+				border-radius: 5px;
+				border: solid 4px $color_tertiary;
+			}
+			&.slick-center{
+				opacity: 1;
+				cursor: auto;
+			}
+			&:hover{
+				opacity: 1;
+			}
+		}
+		@include if-screen($medium){
+			padding-top: 15px;
+			position: static;
+		}
+	}
+	.image-slider-wrapper{
+		position: relative;
+		.image-container{
+			position: relative;
+			img{
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				margin: auto;
+				object-fit: cover;
+			}
+		}
+	}
+  
+  
+  
+  
+  
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SLICK Initializers
+/////////////////////
+
+$('.image-slider').slick({
+	    dots: false,
+	    infinite: true,
+	    speed: 300,
+	    slidesToShow: 1,
+	    adaptiveHeight: true,
+		arrows: true,
+		asNavFor: '.slider-thumbs',
+		prevArrow: '<svg class="prev" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 54 54" style="enable-background:new 0 0 54 54" xml:space="preserve"><path id="outer" d="M3 1.5h48c.8 0 1.5.7 1.5 1.5v48c0 .8-.7 1.5-1.5 1.5H3c-.8 0-1.5-.7-1.5-1.5V3c0-.8.7-1.5 1.5-1.5z" style="fill:#f5f2ec;stroke:#5c7671;stroke-width:3"/><path id="inner" d="m16 27 18-11v22L16 27z" style="fill:#5c7671"/></svg>',
+		nextArrow: '<svg class="next" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 54 54" style="enable-background:new 0 0 54 54" xml:space="preserve"><path id="outer" d="M51 1.5H3c-.8 0-1.5.7-1.5 1.5v48c0 .8.7 1.5 1.5 1.5h48c.8 0 1.5-.7 1.5-1.5V3c0-.8-.7-1.5-1.5-1.5z" style="fill:#f5f2ec;stroke:#5c7671;stroke-width:3"/><path id="inner" d="M38 27 20 16v22l18-11z" style="fill:#5c7671"/></svg>',
+	}); 
+
+	$('.slider-thumbs').slick({
+	    dots: false,
+	    infinite: true,
+	    speed: 300,
+	    slidesToShow: 5,
+	    adaptiveHeight: true,
+		arrows: false,
+		asNavFor: '.image-slider',
+		centerMode: true,
+		focusOnSelect: true,
+		responsive: [
+			{
+				breakpoint: 850,
+				settings: {
+					slidesToShow: 3
+				}
+			}, 
+			{
+				breakpoint: 540,
+				settings: {
+					slidesToShow: 2
+				}
+			}, 
+			{
+				breakpoint: 400,
+				settings: {
+					slidesToShow: 1
+				}
+			}
+		]
+	});
+
