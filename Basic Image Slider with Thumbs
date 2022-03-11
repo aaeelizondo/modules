@@ -1,3 +1,53 @@
+/*///////////////////////////////////////////////
+//
+IMAGE SLIDER
+//
+///////////////////////////////////////////////*/
+function image_slider_function($atts, $content=null){
+	$a = shortcode_atts( array(
+	'images' =>'',
+	'thumbs'=> '',
+	), $atts);
+	$thumbs = $a['thumbs'];
+	$images = $a['images'];
+	$image_ids = explode(', ', $images);
+
+	$number_of_images = sizeof($image_ids);
+	$sliderHTML = '<div class="image-slider-wrapper">';
+
+	$sliderHTML .= '<div class="image-slider">';
+	for($i = 0; $i < $number_of_images; $i++){
+		$image_url = wp_get_attachment_image_url($image_ids[$i], 'full');
+		$image_alt = get_post_meta($image_ids[$i], '_wp_attachment_image_alt', TRUE);
+		$sliderHTML .= '<div class="image-container"><img src="'. $image_url .'" alt="'. $image_alt .'"></div>';
+	}
+	$sliderHTML .= '</div>';
+	
+	if($thumbs == "true"){
+		$sliderHTML .= '<div class="slider-thumbs content center medium not-inner">';
+		for($i = 0; $i < $number_of_images; $i++){
+			$image_url = wp_get_attachment_image_url($image_ids[$i], 'full');
+			$image_alt = get_post_meta($image_ids[$i], '_wp_attachment_image_alt', TRUE);
+			$sliderHTML .= '<div class="image-container"><img src="'. $image_url .'" alt="'. $image_alt .'"></div>';
+		}
+		$sliderHTML .= '</div>';
+	}
+	$sliderHTML .= '</div>';
+
+
+	return $sliderHTML;
+}
+add_shortcode('image_slider', 'image_slider_function');
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CSS
+/////////////////////////////////////////////////////////////////////////////
 #wrapper{
 	.image-slider{
 		.image-container{
@@ -126,4 +176,57 @@
 			}
 		}
 	}
-}
+}  
+  
+  
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SLICK Initializers
+/////////////////////
+
+$('.image-slider').slick({
+	    dots: false,
+	    infinite: true,
+	    speed: 300,
+	    slidesToShow: 1,
+	    adaptiveHeight: true,
+		arrows: true,
+		asNavFor: '.slider-thumbs',
+		prevArrow: '<button class="prev" tabindex="0" type="button" aria-label="previous slide"> <svg version="1.1" id="Group_186" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 40.2 40.2" style="enable-background:new 0 0 40.2 40.2" xml:space="preserve"><path id="Path_102" d="m34.8 0 5.4 5.4v29.4l-5.4 5.4H5.4L0 34.8V5.4L5.4 0h29.4z" style="fill:#f2c66e"/><path id="Polygon_1" d="m11 20.5 15 8v-16l-15 8z" style="fill:#fff"/></svg></button>',
+		nextArrow: '<button class="next" tabindex="0" type="button" aria-label="next slide"><svg version="1.1" id="Group_186" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 40.2 40.2" style="enable-background:new 0 0 40.2 40.2" xml:space="preserve"><path id="Path_102" d="m34.8 0 5.4 5.4v29.4l-5.4 5.4H5.4L0 34.8V5.4L5.4 0h29.4z" style="fill:#f2c66e"/><path id="Polygon_1" d="m29.2 20.5-15 8v-16l15 8z" style="fill:#fff"/></svg></button>',
+		instructionsText: 'Changing this current slide of this carousel will change the current slide of the thumbnail carousel that follows.',
+  		regionLabel: 'main image carousel'
+	}); 
+
+	$('.slider-thumbs').slick({
+	    dots: true,
+	    infinite: true,
+	    speed: 300,
+	    slidesToShow: 5,
+	    adaptiveHeight: true,
+		arrows: false,
+		asNavFor: '.image-slider',
+		centerMode: true,
+		focusOnSelect: true,
+		instructionsText: 'Changing the current slide of this carousel will change the current slide of the preceding main image carousel.',
+  		regionLabel: 'thumbnail carousel',
+		responsive: [
+			{
+				breakpoint: 850,
+				settings: {
+					slidesToShow: 3
+				}
+			}, 
+			{
+				breakpoint: 540,
+				settings: {
+					slidesToShow: 2
+				}
+			}, 
+			{
+				breakpoint: 400,
+				settings: {
+					slidesToShow: 1
+				}
+			}
+		]
+	});
