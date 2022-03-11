@@ -1,62 +1,24 @@
-/*///////////////////////////////////////////////
-//
-IMAGE SLIDER
-//
-///////////////////////////////////////////////*/
-function image_slider_function($atts, $content=null){
-	$a = shortcode_atts( array(
-	'images' =>'',
-	'thumbs'=> '',
-	), $atts);
-	$thumbs = $a['thumbs'];
-	$images = $a['images'];
-	$image_ids = explode(', ', $images);
-
-	$number_of_images = sizeof($image_ids);
-	$sliderHTML = '<div class="image-slider-wrapper">';
-
-	$sliderHTML .= '<div class="image-slider">';
-	for($i = 0; $i < $number_of_images; $i++){
-		$image_url = wp_get_attachment_image_url($image_ids[$i], 'full');
-		$image_alt = get_post_meta($image_ids[$i], '_wp_attachment_image_alt', TRUE);
-		$sliderHTML .= '<div class="image-container"><img src="'. $image_url .'" alt="'. $image_alt .'"></div>';
-	}
-	$sliderHTML .= '</div>';
-	
-	if($thumbs == "true"){
-		$sliderHTML .= '<div class="slider-thumbs content center medium not-inner">';
-		for($i = 0; $i < $number_of_images; $i++){
-			$image_url = wp_get_attachment_image_url($image_ids[$i], 'full');
-			$image_alt = get_post_meta($image_ids[$i], '_wp_attachment_image_alt', TRUE);
-			$sliderHTML .= '<div class="image-container"><img src="'. $image_url .'" alt="'. $image_alt .'"></div>';
-		}
-		$sliderHTML .= '</div>';
-	}
-	$sliderHTML .= '</div>';
-
-
-	return $sliderHTML;
-}
-add_shortcode('image_slider', 'image_slider_function');
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CSS
-/////////////////////
-
-.image-slider{
+#wrapper{
+	.image-slider{
 		.image-container{
 			@include interpolate(min-height, $min-width, $max-width, 240px, 850px);
 		}
 		.slick-arrow{
+			position: absolute;
 			top: 0;
 			bottom: 0;
 			z-index: 1;
+			margin: auto;
+			cursor: pointer;
+			width: 0;
+			height: 0;
+			padding: 0;
+			padding: 0;
+			border: none;
+			svg{
+				width: 40px;
+				height: 40px;
+			}
 			&.prev{
 				left: 60px;
 				@include if-screen($medium){
@@ -67,6 +29,24 @@ CSS
 				right: 60px;
 				@include if-screen($medium){
 					right: 10px;
+				}
+			}
+			path{
+				@include transition-duration(0.8s);
+			}
+			&:hover{
+				path#Path_102{
+					fill: #000 !important;
+				}
+			}
+			&:focus-visible{
+				outline: none;
+				svg{
+					outline: solid 4px $color_yellow;
+					outline-offset: 8px;
+				}
+				path#Path_102{
+					fill: #000 !important;
 				}
 			}
 		}
@@ -86,7 +66,7 @@ CSS
 			img{
 				width: 90% !important;
 				border-radius: 5px;
-				border: solid 4px $color_tertiary;
+				border: solid 4px $color_yellow;
 			}
 			&.slick-center{
 				opacity: 1;
@@ -99,6 +79,34 @@ CSS
 		@include if-screen($medium){
 			padding-top: 15px;
 			position: static;
+		}
+		.slick-dots{
+			text-align: center;
+			li{
+				display: inline-block;
+				margin: 0 10px;
+				button{
+					width: 20px;
+					height: 20px;
+					background-color: #fff;
+					display: inline-block;
+					margin: 0 10px;
+					border-radius: 50%;
+					padding: 0;
+					border: none;
+				}
+				&.slick-active button{
+					background-color: $color_yellow;
+				}
+				&:hover button{
+					background-color: $color_yellow;
+				}
+				&:focus-visible button{
+					background-color: $color_yellow;
+					outline: 4px solid #fff;
+					outline-offset: 8px;
+				}
+			}
 		}
 	}
 	.image-slider-wrapper{
@@ -118,56 +126,4 @@ CSS
 			}
 		}
 	}
-  
-  
-  
-  
-  
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-SLICK Initializers
-/////////////////////
-
-$('.image-slider').slick({
-	    dots: false,
-	    infinite: true,
-	    speed: 300,
-	    slidesToShow: 1,
-	    adaptiveHeight: true,
-		arrows: true,
-		asNavFor: '.slider-thumbs',
-		prevArrow: '<svg class="prev" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 54 54" style="enable-background:new 0 0 54 54" xml:space="preserve"><path id="outer" d="M3 1.5h48c.8 0 1.5.7 1.5 1.5v48c0 .8-.7 1.5-1.5 1.5H3c-.8 0-1.5-.7-1.5-1.5V3c0-.8.7-1.5 1.5-1.5z" style="fill:#f5f2ec;stroke:#5c7671;stroke-width:3"/><path id="inner" d="m16 27 18-11v22L16 27z" style="fill:#5c7671"/></svg>',
-		nextArrow: '<svg class="next" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 54 54" style="enable-background:new 0 0 54 54" xml:space="preserve"><path id="outer" d="M51 1.5H3c-.8 0-1.5.7-1.5 1.5v48c0 .8.7 1.5 1.5 1.5h48c.8 0 1.5-.7 1.5-1.5V3c0-.8-.7-1.5-1.5-1.5z" style="fill:#f5f2ec;stroke:#5c7671;stroke-width:3"/><path id="inner" d="M38 27 20 16v22l18-11z" style="fill:#5c7671"/></svg>',
-	}); 
-
-	$('.slider-thumbs').slick({
-	    dots: false,
-	    infinite: true,
-	    speed: 300,
-	    slidesToShow: 5,
-	    adaptiveHeight: true,
-		arrows: false,
-		asNavFor: '.image-slider',
-		centerMode: true,
-		focusOnSelect: true,
-		responsive: [
-			{
-				breakpoint: 850,
-				settings: {
-					slidesToShow: 3
-				}
-			}, 
-			{
-				breakpoint: 540,
-				settings: {
-					slidesToShow: 2
-				}
-			}, 
-			{
-				breakpoint: 400,
-				settings: {
-					slidesToShow: 1
-				}
-			}
-		]
-	});
-
+}
