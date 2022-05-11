@@ -1,0 +1,91 @@
+/*/////////////////////////////////////////////////////////////
+WOOCOMMERCE
+*//////////////////////////////////////////////////////////////
+#wrapper{
+	#sidebar, .woocommerce-breadcrumb, .product_meta{
+		display: none;
+	}
+	.price{
+		bdi{
+			font-size: 24px;
+			color: #000;
+			span{
+				color: $color_primary;
+				font-weight: 700;
+				font-size: 22px;
+			}
+		}
+	}
+	.cart{
+		input[type="number"]{
+			padding: 5px;
+			margin-top: 15px;
+		}
+	}
+	.product_meta{
+		a{
+			@include transition-duration(0.5s);
+			color: $color_primary;
+			&:hover{
+				color: $color_secondary;
+			}
+		}
+	}
+	.wc-block-featured-product{
+		border-radius: 0 100px 0 100px;	
+		h2{
+			color: $color_secondary;
+			text-align: left;
+		}
+		.wc-block-featured-product__description{
+			text-align: left !important;
+		}
+		.woocommerce-Price-amount{
+			font-size: 25px;
+			font-weight: 700;
+			color: $color_secondary;
+		}
+	}
+	.wc-block-featured-product.has-background-dim:before {
+		border-radius: 0 100px 0 100px;	
+		border: solid $color_secondary;
+		@include interpolate(border-width, $min-width, $max-width, 5px, 15px);
+	}
+	.woocommerce-product-details__short-description{
+		margin-bottom: 30px;
+		margin-top: 45px;
+	}
+}
+.woocommerce div.product div.images .flex-control-thumbs li{
+	padding: 10px !important;
+}
+.woocommerce div.product div.images .flex-control-thumbs{
+	margin-left: -10px !important;
+	margin-right: -10px !important;
+}
+.woocommerce-error, .woocommerce-info, .woocommerce-message{
+	border-top-color: $color_secondary !important;
+	a{
+		color: $color_secondary !important;
+	}
+	&::before{
+		color: $color_secondary !important;
+	}
+}
+ul.products li{
+	list-style: none !important;
+}
+#add_payment_method table.cart td.actions .coupon .input-text, .woocommerce-cart table.cart td.actions .coupon .input-text, .woocommerce-checkout table.cart td.actions .coupon .input-text{
+	width: 250px !important;
+	margin-bottom: 12px !important;
+}
+.coupon{
+	margin-bottom: 30px !important;
+}
+.select2-container--default .select2-selection--single{
+	border-color: $color_primary !important;
+}
+.select2-container .select2-selection--single{
+	padding: 3px;
+	height: 35px !important;
+}
